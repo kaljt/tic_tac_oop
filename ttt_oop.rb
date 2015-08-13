@@ -65,7 +65,7 @@ end
 
 class Board < Square 
   attr_reader :squares_per_row, :number_of_rows
-  attr_accessor :square_model
+  attr_accessor :square_model, :my_board
 
   def initialize(sq_per_row, num_of_rows,sq_model)
     @squares_per_row = sq_per_row
@@ -74,23 +74,28 @@ class Board < Square
   end
 
   def build_board
-    my_board = [(squares_per_row * number_of_rows)]
+    @my_board = Array.new(squares_per_row * number_of_rows)
+    my_board.each_index do |index|
+    my_board[index] = square_model
+    end
     my_board.each do |square|
     square.build_square
     end
+    #binding.pry
   end
 
   def draw_board
 
     loop_counter = 0
     #num_squares_per_row = 4
-    #num_rows = 4
-    while loop_counter < num_rows
+    #number_of_rows = 
+    #binding.pry
+    while loop_counter < self.number_of_rows
     square_index = 0
     while square_index < my_board[0].sq.size
       my_board.each_index do |index|
       print my_board[index].sq[square_index]
-      if index == (num_squares_per_row - 1)
+      if index == (squares_per_row - 1)
         puts "\n"
         square_index += 1
         break
@@ -114,6 +119,14 @@ class Tic_Tac_Toe_Board < Board
     ttt_board.build_board
   end
 
+  def ttt_draw_board
+    ttt_board.draw_board
+  end
+
+  def ttt_mark_square
+    
+  end
+
 end
 
 #my_square = Square.new(6,"*")
@@ -123,3 +136,4 @@ end
 #puts square.display_square
 
 ttt_board = Tic_Tac_Toe_Board.new
+ttt_board.ttt_draw_board
