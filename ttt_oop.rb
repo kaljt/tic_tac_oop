@@ -65,18 +65,21 @@ end
 
 class Board < Square 
   attr_reader :squares_per_row, :number_of_rows
-  attr_accessor :square_model, :my_board
+  attr_accessor :my_board
 
-  def initialize(sq_per_row, num_of_rows,sq_model)
+  def initialize(sq_per_row, num_of_rows, length, chr)
     @squares_per_row = sq_per_row
     @number_of_rows = num_of_rows
-    @square_model= sq_model
+    @len = length
+    @char = chr
+    #@square_model= sq_model
   end
 
   def build_board
+    #binding.pry
     @my_board = Array.new(squares_per_row * number_of_rows)
     my_board.each_index do |index|
-    my_board[index] = square_model
+    my_board[index] = Square.new(self.len,self.char)
     end
     my_board.each do |square|
     square.build_square
@@ -90,6 +93,7 @@ class Board < Square
     #num_squares_per_row = 4
     #number_of_rows = 
     #binding.pry
+    break_point = self.len * squares_per_row
     while loop_counter < self.number_of_rows
     square_index = 0
     while square_index < my_board[0].sq.size
@@ -102,7 +106,7 @@ class Board < Square
       end
       end
     end
-#puts "\n"
+binding.pry
 loop_counter += 1
   end
     
@@ -114,9 +118,10 @@ class Tic_Tac_Toe_Board < Board
   attr_accessor :ttt_square, :ttt_board
 
   def initialize
-    @ttt_square = Square.new(6,"*")
-    @ttt_board = Board.new(3,3,ttt_square)  
+    #@ttt_square = Square.new(6,"*")
+    @ttt_board = Board.new(3,3, 6, "*")  
     ttt_board.build_board
+    #binding.pry
   end
 
   def ttt_draw_board
@@ -124,7 +129,7 @@ class Tic_Tac_Toe_Board < Board
   end
 
   def ttt_mark_square
-    
+    ttt_board.my_board[0].sq[2] = "   X  "
   end
 
 end
@@ -135,5 +140,42 @@ end
 #my_board = [Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.')]
 #puts square.display_square
 
-ttt_board = Tic_Tac_Toe_Board.new
-ttt_board.ttt_draw_board
+class Player
+  attr_reader :player_name, :player_marker
+
+  def initialize(p_name,p_mark = nil)
+    @player_name = p_name
+    @player_marker = p_mark
+    
+  end
+end
+
+#my_square = Square.new(6,"*")
+#my_square.build_square
+#puts my_square.display_square
+#my_board = [Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.')]
+#puts square.display_square
+
+class Game
+  attr_accessor :player_one, :player_two, :game_board
+
+  def start_game
+    
+    @game_board = Tic_Tac_Toe_Board.new
+    game_board.ttt_draw_board
+    @player_one = Player.new("Bob","X")
+    @player_two = Player.new("Opponent", "O")
+    game_board.ttt_mark_square
+    game_board.ttt_draw_board
+    #binding.pry
+  end
+
+  def game_turn
+    
+  end
+
+end
+
+
+my_game = Game.new
+my_game.start_game
