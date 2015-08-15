@@ -33,7 +33,7 @@
 
 class Square 
 attr_reader :len, :char, :spaces, :top_bottom, :center
-attr_accessor :sq 
+attr_accessor :sq, :occupied
 
   def initialize(len,char)
     @len = len
@@ -50,6 +50,7 @@ attr_accessor :sq
     @sq = Array.new(len)
     @spaces = (" " * (len - 2))
     @top_bottom = (char * len)
+    @occupied = 0
     counter = 0
     while true
       if (counter == 0 || counter == (len-1))
@@ -164,8 +165,18 @@ class Tic_Tac_Toe_Board < Board
     ttt_board.draw_board
   end
 
-  def ttt_mark_square(square_to_mark)
+  def ttt_mark_square(square_to_mark,player)
+    #while ttt_board.my_board[square_to_mark].occupied == 1
+    #  puts "Square taken, choose again"
+
+
+    if player.player_name == "Opponent"
+      ttt_board.my_board[square_to_mark].sq[(ttt_board.len / 2)] = ".  O ."
+      ttt_board.my_board[square_to_mark].occupied = 1
+    else
     ttt_board.my_board[square_to_mark].sq[(ttt_board.len / 2)] = ".  X ."
+    ttt_board.my_board[square_to_mark].occupied = 1
+  end
   end
 
 end
@@ -175,16 +186,25 @@ end
 #puts my_square.display_square
 #my_board = [Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.')]
 #puts square.display_square
+module Turn
+  def choose_square
 
-class Player
-  attr_reader :player_name, :player_marker
-
-  def initialize(p_name,p_mark = nil)
-    @player_name = p_name
-    @player_marker = p_mark
+    puts "Select a square from 1 to 9"
+    player_choice = (gets.chomp.to_i) - 1
     
   end
+
+  def opponent_choose_square
+    opp_options = *(1..9)
+    choice = opp_options.sample
+    puts "Opponent selecting square..."
+    sleep 0.5
+    player_choice = choice - 1
+  end
+
 end
+
+
 
 #my_square = Square.new(6,"*")
 #my_square.build_square
@@ -193,6 +213,8 @@ end
 #puts square.display_square
 
 class Game
+
+  include Turn
   attr_accessor :player_one, :player_two, :game_board
 
   def start_game
@@ -201,15 +223,39 @@ class Game
     game_board.ttt_draw_board
     @player_one = Player.new("Bob","X")
     @player_two = Player.new("Opponent", "O")
-    game_board.ttt_mark_square(2)
+    #game_board.ttt_mark_square(2)
+    #game_board.ttt_draw_board
+    while !game_over
+    player_choice = player_one.choose_square
+    game_board.ttt_mark_square(player_choice,player_one)
     game_board.ttt_draw_board
+    player_choice = player_two.opponent_choose_square
+    game_board.ttt_mark_square(player_choice,player_two)
+    game_board.ttt_draw_board
+  end
+
     #binding.pry
   end
 
-  def game_turn
+  def winner
     
   end
 
+  def game_over
+    
+  end
+
+end
+
+class Player < Game
+  include Turn
+  attr_reader :player_name, :player_marker
+
+  def initialize(p_name,p_mark = nil)
+    @player_name = p_name
+    @player_marker = p_mark
+    
+  end
 end
 
 
