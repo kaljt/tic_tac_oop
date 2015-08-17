@@ -9,7 +9,9 @@ class Square
     @value = value
     @len = len
     @char = char
+    #binding.pry
     @sq_model = build_square
+
   end
 
   def get_center
@@ -19,6 +21,7 @@ class Square
 
   def mark(marker)
     @value = marker
+    sq[get_center] = char + "  " + marker+ " " + char
   end
   
   def is_occupied?
@@ -27,7 +30,7 @@ class Square
   end
 
   def is_empty?
-    @value = " "
+    @value == " "
   end
 
   def build_square
@@ -50,9 +53,9 @@ class Square
  end
 end
 
-class Board < Square 
+class Board 
   attr_reader :squares_per_row, :number_of_rows, :len
-  attr_accessor :my_board
+  attr_accessor :my_board, :data
 
   def initialize(sq_per_row, num_of_rows, length, chr)
     @data = {}
@@ -60,12 +63,52 @@ class Board < Square
     @number_of_rows = num_of_rows
     @len = length
     @char = chr
-    (1..(squares_per_row * number_of_rows)).each {|position| @data[position] = Square.new(@length,@char," ")}
+    #binding.pry
+    (1..(squares_per_row * number_of_rows)).each {|position| @data[position] = Square.new(@len,@char," ")}
+    #binding.pry
     #@square_model= sq_model
   end
+
   def draw
+
     puts "Drawing....board..."
-    puts @data.inspect
+    #puts @data.inspect
+
+        loop_counter = 0
+    row = 1
+    #num_squares_per_row = 4
+    #number_of_rows = 
+    #binding.pry
+    while loop_counter < self.number_of_rows
+    square_index = 0
+    while square_index < @data[1].sq.size
+      while row <= self.number_of_rows
+      if row == 1
+        range_start = 1
+        range_stop = ((squares_per_row * row))
+        break
+      else
+        range_start = ((row * squares_per_row) - squares_per_row + 1)
+        range_stop = (range_start + (squares_per_row - 1)) 
+        break
+      end
+    end
+      @data.each_slice(squares_per_row)  do |index|
+      print @data[range_start].sq[square_index]
+      if range_start == range_stop
+        puts "\n"
+        square_index += 1
+        break
+        else
+        range_start += 1
+
+      end
+      end
+    end
+  loop_counter += 1
+  row += 1
+  end
+
   end
 
   def all_squares_marked?
@@ -78,34 +121,18 @@ class Board < Square
   end
 
   def empty_positions
+    #binding.pry
     @data.select {|_, square| square.is_empty? }.keys
   end
 
-
-  #def build_board
-  #  #binding.pry
-  #  @my_board = Array.new(squares_per_row * number_of_rows)
-  #  my_board.each_index do |index|
-  #  my_board[index] = Square.new(self.len,self.char)
-  #  end
-  #  my_board.each do |square|
-  #  square.build_square
-  #  end
-  #  #binding.pry
-  #end
   
   def draw_board
 
     loop_counter = 0
     row = 1
-    #num_squares_per_row = 4
-    #number_of_rows = 
-    #binding.pry
-    break_point_max = self.len * squares_per_row
-    break_point = 0
     while loop_counter < self.number_of_rows
     square_index = 0
-    while square_index < my_board[0].sq.size
+    while square_index < ttt_board.data[1].sq.size
       while row <= self.number_of_rows
       if row == 1
         range_start = 0
@@ -115,20 +142,10 @@ class Board < Square
         range_start = ((row * squares_per_row) - squares_per_row)
         range_stop = (range_start + (squares_per_row - 1)) 
         break
-      #elsif row == 2
-      #  range_start = 3
-      #  range_stop = 5
-      #  break
-      #else
-      #  range_start = 6
-      #  range_stop = 8
-      #  break
       end
     end
-      my_board.each_slice(squares_per_row)  do |index|
-      #my_board[range_start..range_stop].each_index do |index|
-      print my_board[range_start].sq[square_index]
-      #range_start += 1
+      ttt_board.each_slice(squares_per_row)  do |index|
+      print ttt_board.data[range_start].sq[square_index]
       if range_start == range_stop
         puts "\n"
         square_index += 1
@@ -136,14 +153,9 @@ class Board < Square
         else
         range_start += 1
 
-      #if index == (squares_per_row - 1)
-      #  puts "\n"
-      #  square_index += 1
-      #  break
       end
       end
     end
-#binding.pry
 loop_counter += 1
 row += 1
   end
@@ -165,62 +177,14 @@ class Tic_Tac_Toe_Board < Board
     ttt_board.draw
   end
 
-  def ttt_mark_square(square_to_mark,player)
-    #while ttt_board.my_board[square_to_mark].occupied == 1
-    #  puts "Square taken, choose again"
-
-
-    if player.player_name == "Opponent"
-      ttt_board.my_board[square_to_mark].sq[(ttt_board.len / 2)] = ".  O ."
-      ttt_board.my_board[square_to_mark].occupied = 1
-    else
-    ttt_board.my_board[square_to_mark].sq[(ttt_board.len / 2)] = ".  X ."
-    ttt_board.my_board[square_to_mark].occupied = 1
-  end
-  end
-
-  def all_squares_marked?
-    
-  end
-
 end
-
-#my_square = Square.new(6,"*")
-#my_square.build_square
-#puts my_square.display_square
-#my_board = [Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.')]
-#puts square.display_square
-module Turn
-  def choose_square
-
-    puts "Select a square from 1 to 9"
-    player_choice = (gets.chomp.to_i) - 1
-    
-  end
-
-  def opponent_choose_square
-    opp_options = *(1..9)
-    choice = opp_options.sample
-    puts "Opponent selecting square..."
-    sleep 0.5
-    player_choice = choice - 1
-  end
-
-end
-
-
-
-#my_square = Square.new(6,"*")
-#my_square.build_square
-#puts my_square.display_square
-#my_board = [Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.'),Square.new(6, '.')]
-#puts square.display_square
 
 class Game
 
-  include Turn
+  
   attr_accessor :player_one, :player_two, :game_board
   attr_reader :marker
+  WINNING_LINES = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
 
   def initialize
     @board = Tic_Tac_Toe_Board.new
@@ -234,11 +198,12 @@ class Game
       begin
         puts "Choose a position (1-9):"
         position = gets.chomp.to_i
-      end until @board.empty_positions.include?(position)
+      end until @board.ttt_board.empty_positions.include?(position)
       else
-        position = @board.empty_positions.sample
+        position = @board.ttt_board.empty_positions.sample
       end
-      @board[position].mark(@current_player.player_marker)
+      #binding.pry
+      @board.ttt_board.data[position].mark(@current_player.player_marker)
   end
 
   def alternate_player
@@ -249,41 +214,72 @@ class Game
     end
   end
 
-  def play
-    @board.draw
-    loop do 
-      current_player_marks_square
-      alternate_player
-    end
+  def tie_game
+    @board.ttt_board.all_squares_marked?  && !player_wins
   end
-end
-    #@game_board = Tic_Tac_Toe_Board.new
-    #game_board.ttt_draw_board
-    #@player_one = Player.new("Bob","X")
-    #@player_two = Player.new("Opponent", "O")
-    #binding.pry
-    ##game_board.ttt_mark_square(2)
-    ##game_board.ttt_draw_board
-    #while !game_over
-    #player_choice = player_one.choose_square
-    #game_board.ttt_mark_square(player_choice,player_one)
-    #game_board.ttt_draw_board
-    #player_choice = player_two.opponent_choose_square
-    #game_board.ttt_mark_square(player_choice,player_two)
-    #game_board.ttt_draw_board
-  
 
-    #binding.pry
+  def player_wins
+    sq_center = @board.ttt_board.data[1].get_center
+    WINNING_LINES.each do |element|
+      element.each_slice(3) do |value|
+         if @board.ttt_board.data[value[0]].sq[sq_center].include?(@current_player.player_marker) && 
+            @board.ttt_board.data[value[1]].sq[sq_center].include?(@current_player.player_marker) &&
+            @board.ttt_board.data[value[2]].sq[sq_center].include?(@current_player.player_marker)
+            return true
+          end
+        end
+      end
+      false
+  end
+
+  def game_over
+    if tie_game
+      puts "It's a tie!"
+      return true
+    elsif player_wins
+      puts "#{@current_player.player_name} won the game"
+      return true
+    else
+      false
+    end
+
+  end
+
+  def play
+    @board.ttt_board.draw
+     loop do 
+      current_player_marks_square
+      @board.ttt_board.draw
+      if game_over
+        break
+      end
+      alternate_player
+      @board.ttt_board.draw
+      if game_over
+        break
+      end
+    end
+   
+  
+  end
+
+end
 
 class Player
-  include Turn
+  
   attr_reader :player_name, :player_marker
 
-  def initialize(p_name,p_mark = nil)
+  def initialize(p_name,p_mark)
     @player_name = p_name
     @player_marker = p_mark
   end
 end
 
-
+player_choice = "Y"
+while player_choice == "Y"
 Game.new.play
+puts "Care to play again?"
+player_choice = gets.chomp.upcase
+end
+
+
